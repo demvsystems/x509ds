@@ -80,7 +80,9 @@ final class PrivateKey
      */
     private function __construct($resource)
     {
-        $this->assertResource($resource);
+        if (\PHP_VERSION_ID < 80000) {
+            $this->assertResource($resource);
+        }
         $this->resource = $resource;
     }
 
@@ -89,7 +91,9 @@ final class PrivateKey
      */
     public function __destruct()
     {
-        openssl_free_key($this->resource);
+        if (\PHP_VERSION_ID < 80000) {
+            openssl_free_key($this->resource);
+        }
     }
 
     /**
@@ -107,7 +111,7 @@ final class PrivateKey
      */
     private function assertResource($resource): void
     {
-        if (is_resource($resource) == false) {
+        if (!is_resource($resource)) {
             throw new InvalidArgumentException(
                 sprintf(
                     'Argument must be a valid resource type. %s given.',
